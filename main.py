@@ -3,6 +3,7 @@ import time
 
 from dotenv import load_dotenv
 from selenium import webdriver
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -20,18 +21,21 @@ class InternetSpeedBot:
         self.wait = WebDriverWait(self.driver, 10)
 
     def login(self):
-        self.driver.get(self.url)
+        try:
+            self.driver.get(self.url)
 
-        email_input = self.wait.until(EC.element_to_be_clickable((By.NAME, "email")))
-        email_input.send_keys(self.email)
-        password_input = self.wait.until(EC.element_to_be_clickable((By.NAME, "password")))
-        password_input.send_keys(self.password)
+            email_input = self.wait.until(EC.element_to_be_clickable((By.NAME, "email")))
+            email_input.send_keys(self.email)
+            password_input = self.wait.until(EC.element_to_be_clickable((By.NAME, "password")))
+            password_input.send_keys(self.password)
 
-        submit_btn = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "y-login-submit")))
-        submit_btn.click()
+            submit_btn = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "y-login-submit")))
+            submit_btn.click()
 
-        self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "x-sidebar-logo")))
-        print("Login Successful")
+            self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "x-sidebar-logo")))
+            print("Login Successful")
+        except TimeoutException:
+            print("Login Failed")
 
     def get_internet_speed(self):
         pass
