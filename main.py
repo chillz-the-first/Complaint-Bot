@@ -38,7 +38,31 @@ class InternetSpeedBot:
             print("Login Failed")
 
     def get_internet_speed(self):
-        pass
+        try:
+            self.driver.get(os.environ.get("TEST_URL"))
+
+            start_btn = self.wait.until(EC.element_to_be_clickable(
+                (By.XPATH, '//*[@id="root"]/div/div[1]/div/div[2]/div[2]/div[2]/div/div/div[2]/div[2]/button')
+            ))
+            start_btn.click()
+
+            time.sleep(45)
+
+            download = self.wait.until(EC.visibility_of_element_located(
+                (By.XPATH,
+                 '//*[@id="root"]/div/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div[1]/div/h3')
+            )).text
+            upload = self.wait.until(EC.visibility_of_element_located(
+                (By.XPATH,
+                 '//*[@id="root"]/div/div[1]/div/div[2]/div[2]/div[2]/div/div/div/div[2]/div[2]/div[1]/div[2]/div/h3')
+            )).text
+
+            print("Download Speed:", download)
+            print(type(download))
+            print("Upload Speed:", upload)
+            print(type(upload))
+        except TimeoutException:
+            print("Speed test failed")
 
     def tweet_at_provider(self):
         pass
@@ -50,7 +74,8 @@ promised_up = os.environ.get('PROMISED_UP')
 try:
     bot = InternetSpeedBot(down=promised_down, up=promised_up)
     bot.login()
+    bot.get_internet_speed()
 
-    time.sleep(10)
+    time.sleep(20)
 finally:
     bot.driver.quit()
